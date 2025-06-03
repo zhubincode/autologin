@@ -19,23 +19,20 @@
 
 ### 本地运行
 
+**推荐使用 pnpm（更快、更节省空间）：**
+
 ```bash
 # 克隆项目
 git clone https://github.com/zhubincode/autologin.git
 cd autologin
 
+# 安装 pnpm（如果还没有安装）
+npm install -g pnpm
+
 # 安装依赖
-npm install
-# 或
-yarn install
-# 或
 pnpm install
 
 # 启动开发服务器
-npm run dev
-# 或
-yarn dev
-# 或
 pnpm dev
 ```
 
