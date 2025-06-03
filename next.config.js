@@ -1,4 +1,4 @@
 module.exports = {
-  output: 'standalone',
-  reactStrictMode: true
-}
+  output: "standalone",
+  reactStrictMode: true,
+};

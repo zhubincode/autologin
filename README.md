@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 自动登录助手 (Auto Login Assistant)
 
-## Getting Started
+一个跨浏览器登录状态迁移工具，支持一键提取和注入登录数据，让你在不同浏览器间快速同步登录状态。
 
-First, run the development server:
+## ✨ 功能特点
+
+- 🚀 **万能模式**：一键提取所有 localStorage 和 Cookie 数据
+- 🎯 **单项模式**：精确提取指定的 token、用户信息或会话 ID
+- 🔒 **安全可靠**：本地处理，数据不上传服务器
+- 🌐 **跨浏览器**：支持 Chrome、Firefox、Safari、Edge 等主流浏览器
+- ⚡ **快速便捷**：三种复制方式确保代码 B 成功复制到剪贴板
+- 🎨 **现代界面**：支持暗色模式，响应式设计
+
+## 🚀 快速开始
+
+### 在线使用
+
+访问：[https://autologin.zbcode.cn](https://autologin.zbcode.cn)
+
+### 本地运行
 
 ```bash
+# 克隆项目
+git clone https://github.com/zhubincode/autologin.git
+cd autologin
+
+# 安装依赖
+npm install
+# 或
+yarn install
+# 或
+pnpm install
+
+# 启动开发服务器
 npm run dev
-# or
+# 或
 yarn dev
-# or
+# 或
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📖 详细使用说明
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 操作步骤
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. 选择配置模式 ：在已登录的源浏览器中选择合适的配置模式
+2. 生成代码 A ：点击生成按钮，系统自动提取登录数据
+3. 执行代码 A ：复制代码 A 到源浏览器控制台（F12）执行
+4. 获取代码 B ：执行后自动生成代码 B 并复制到剪贴板
+5. 注入登录态 ：在目标浏览器控制台粘贴执行代码 B
+6. 完成迁移 ：刷新页面查看登录效果
 
-## Learn More
+### 配置模式说明
 
-To learn more about Next.js, take a look at the following resources:
+- 🚀 万能模式 ：提取所有 localStorage 和 Cookie，适用于复杂系统
+- 🔑 认证令牌 ：只提取 localStorage 中的 token
+- 👤 用户信息 ：只提取 localStorage 中的 userInfo
+- 🛡️ Bearer 令牌 ：只提取 Cookie 中的 authToken
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 实际应用场景
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. 团队协作项目
 
-## Deploy on Vercel
+场景 ：在互踢等团队协作项目中，需要共享个人账号给团队成员使用
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+解决方案 ：
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 账号持有者在已登录的浏览器中使用万能模式生成代码
+- 团队成员在自己的浏览器中执行代码 B，快速获得登录权限
+- 避免频繁输入账号密码，提高协作效率
+  适用项目 ：
+
+- 设计协作平台（Figma、Sketch 等）
+- 项目管理工具（Jira、Trello 等）
+- 开发工具（GitLab、Jenkins 等）
+
+### 2. 多环境开发测试
+
+场景 ：开发人员需要在不同浏览器中测试同一账号的功能
+
+解决方案 ：
+
+- 在 Chrome 中登录开发环境，使用工具迁移到 Firefox 测试兼容性
+- 在 Safari 中验证移动端适配，快速同步登录状态
+- 避免重复登录，节省测试时间
+
+### 3. 客户演示支持
+
+场景 ：销售或技术支持需要在客户面前演示产品功能
+
+解决方案 ：
+
+- 提前在自己的浏览器中准备好演示账号
+- 现场快速在演示设备上注入登录状态
+- 确保演示流畅，提升客户体验
+
+### 4. 跨设备办公
+
+场景 ：在家办公和公司办公需要在不同设备间同步工作状态
+
+解决方案 ：
+
+- 下班前在公司电脑上提取登录状态
+- 回家后在个人设备上快速恢复工作环境
+- 支持多个平台的状态同步
+
+### 5. 紧急故障处理
+
+场景 ：系统出现故障，需要紧急在其他设备上登录处理
+
+解决方案 ：
+
+- 快速从正常设备提取管理员登录状态
+- 在备用设备上立即获得管理权限
+- 缩短故障处理时间，降低业务影响
+
+### 6. 培训和教学
+
+场景 ：讲师需要在多个设备上演示相同的操作流程
+
+解决方案 ：
+
+- 在主设备上准备好教学账号
+- 快速在学员设备或投影设备上同步登录
+- 确保教学演示的连贯性
+
+## 🔧 技术栈
+
+- 前端框架 ：Next.js 14
+- UI 库 ：Tailwind CSS
+- 语言 ：TypeScript
+- 部署 ：Vercel
+
+## 🛡️ 安全说明
+
+- ✅ 所有数据处理均在本地完成，不上传到服务器
+- ✅ 支持 HTTPS 环境，确保数据传输安全
+- ✅ 代码开源透明，可自行审查安全性
+- ⚠️ 请勿在公共网络环境下传输敏感登录数据
+- ⚠️ 建议定期更换重要账号密码
+
+## 🤝 贡献指南
+
+欢迎提交 Issue 和 Pull Request 来改进这个项目！
+
+1. Fork 本仓库
+2. 创建你的特性分支 ( git checkout -b feature/AmazingFeature )
+3. 提交你的修改 ( git commit -m 'Add some AmazingFeature' )
+4. 推送到分支 ( git push origin feature/AmazingFeature )
+5. 打开一个 Pull Request
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 LICENSE 文件了解详情
+
+## 📞 联系方式
+
+- 作者：zhubin
+- GitHub： @zhubincode
+- 项目地址： https://github.com/zhubincode/autologin
+  ⭐ 如果这个项目对你有帮助，请给它一个星标！
+
