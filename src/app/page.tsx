@@ -155,7 +155,7 @@ export default function Home() {
           if(p[0]&&p[1])d.c[p[0]]=decodeURIComponent(p[1])
         });
 
-        var codeB = 'javascript:(function(){var d=' + JSON.stringify(d) + ';Object.keys(d.l).forEach(function(k){localStorage.setItem(k,d.l[k])});Object.keys(d.c).forEach(function(k){document.cookie=k+"="+encodeURIComponent(d.c[k])+"; path=/; max-age=86400"});console.log("✅登录态注入完成");setTimeout(function(){location.href="' + d.u + '"},500)})()';
+        var codeB = 'javascript:(function(){var d=' + JSON.stringify(d) + ';Object.keys(d.l).forEach(function(k){localStorage.setItem(k,d.l[k])});Object.keys(d.c).forEach(function(k){document.cookie=k+"="+encodeURIComponent(d.c[k])+"; path=/; max-age=86400"});console.log("✅登录态注入完成");setTimeout(function(){location.href="' + d.u + '"},500)})()'
 
         // 使用三种复制方式
         ${copyCodeWithMultipleMethods.toString()}
@@ -278,14 +278,83 @@ export default function Home() {
             }`}>使用说明</h3>
           </div>
 
-          {/* ... 保持原有的使用说明内容不变 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 className={`text-lg font-semibold mb-4 ${
+                darkMode ? "text-white" : "text-slate-900"
+              }`}>📋 操作步骤</h4>
+              <ol className={`space-y-3 text-sm ${
+                darkMode ? "text-slate-300" : "text-slate-600"
+              }`}>
+                <li className="flex items-start space-x-2">
+                  <span className="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                  <span>在<strong>已登录</strong>的源浏览器中，选择对应的配置模式</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                  <span>点击生成代码，系统会自动提取登录数据并生成代码A</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                  <span>复制代码A，在源浏览器的控制台（F12）中执行</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
+                  <span>执行后会自动生成代码B并复制到剪贴板</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">5</span>
+                  <span>在目标浏览器的控制台中粘贴并执行代码B</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+                  <span>登录状态迁移完成，刷新页面即可看到登录效果</span>
+                </li>
+              </ol>
+            </div>
+
+            <div>
+              <h4 className={`text-lg font-semibold mb-4 ${
+                darkMode ? "text-white" : "text-slate-900"
+              }`}>🔧 配置说明</h4>
+              <div className={`space-y-4 text-sm ${
+                darkMode ? "text-slate-300" : "text-slate-600"
+              }`}>
+                <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                  <div className="font-semibold text-blue-700 dark:text-blue-300 mb-1">🚀 万能模式</div>
+                  <div>提取所有localStorage和Cookie数据，适用于复杂登录系统。数据量大但覆盖全面，自动使用三种复制方式确保成功。</div>
+                </div>
+                <div className="p-3 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+                  <div className="font-semibold text-green-700 dark:text-green-300 mb-1">🎯 单项模式</div>
+                  <div>只提取指定的token、用户信息或会话ID，数据量小，适用于简单登录系统。</div>
+                </div>
+                <div className="p-3 rounded-lg bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20">
+                  <div className="font-semibold text-yellow-700 dark:text-yellow-300 mb-1">⚠️ 注意事项</div>
+                  <div>确保在HTTPS环境下使用，避免在公共网络中传输敏感数据。</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 页脚 */}
         <footer className={`mt-16 text-center py-8 border-t ${
           darkMode ? "border-slate-700 text-slate-400" : "border-slate-200 text-slate-600"
         }`}>
-          {/* ... 保持原有的页脚内容不变 */}
+          <div className="max-w-4xl mx-auto">
+            <p className="text-sm mb-4">
+              自动登录助手 - 让登录状态迁移变得简单高效
+            </p>
+            <div className="flex items-center justify-center space-x-6 text-xs">
+              <span>🔒 本地处理，数据安全</span>
+              <span>⚡ 一键迁移，快速便捷</span>
+              <span>🌐 跨浏览器兼容</span>
+              <span>🛠️ 开源免费</span>
+            </div>
+            <p className="text-xs mt-4 opacity-75">
+              版本 1.0.0 | 最后更新：{new Date().toLocaleDateString('zh-CN')} | <a href="https://github.com/zhubincode/autologin" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
+            </p>
+          </div>
         </footer>
       </main>
     </div>
