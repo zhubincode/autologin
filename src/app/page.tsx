@@ -207,60 +207,91 @@ export default function Home() {
   return (
     <div className={`min-h-screen transition-all duration-500 ${
       darkMode
-        ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-        : "bg-gradient-to-br from-blue-50 via-white to-purple-50"
+        ? "bg-slate-900"
+        : "bg-gray-50"
     }`}>
-      <main className="container mx-auto px-4 py-8">
+      {/* 贯穿式渐变顶部 */}
+      <div className={`relative ${
+        darkMode
+          ? "bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900"
+          : "bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600"
+      }`}>
         {/* 顶部导航 */}
-        <nav className={`flex justify-between items-center mb-12 p-6 rounded-2xl backdrop-blur-xl border ${
-          darkMode
-            ? "bg-slate-800/50 border-slate-700"
-            : "bg-white/70 border-slate-200"
-        }`}>
-          <div className={`text-lg font-mono ${
-            darkMode ? "text-slate-300" : "text-slate-600"
-          }`}>
-            {currentTime}
+        <nav className="relative z-10 container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-6">
+              <h1 className="text-xl font-semibold text-white">
+                AutoLogin
+              </h1>
+              <div className="text-sm font-mono text-white/70">
+                {currentTime}
+              </div>
+            </div>
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all duration-200"
+            >
+              {darkMode ? <SunIcon /> : <MoonIcon />}
+            </button>
           </div>
-          <button
-            onClick={toggleDarkMode}
-            className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 ${
-              darkMode
-                ? "bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30"
-                : "bg-slate-200 text-slate-600 hover:bg-slate-300"
-            }`}
-          >
-            {darkMode ? <SunIcon /> : <MoonIcon />}
-          </button>
         </nav>
 
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className={`text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent`}>
+        {/* 紧凑的Hero区域 */}
+        <div className="relative z-10 container mx-auto px-6 py-16 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             登录态注入工具
           </h1>
-          <p className={`text-xl mb-8 ${
-            darkMode ? "text-slate-300" : "text-slate-600"
-          }`}>
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
             快速、安全、智能的跨浏览器登录状态迁移解决方案
           </p>
         </div>
 
-        {/* 主要内容区域 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <ConfigSelector
-            configs={presetConfigs}
-            selectedConfig={selectedConfig}
-            onSelect={generateCode}
-            darkMode={darkMode}
-          />
+        {/* 渐变阴影过渡 */}
+        <div className={`absolute bottom-0 left-0 right-0 h-20 ${
+          darkMode
+            ? "bg-gradient-to-b from-transparent to-slate-900/50"
+            : "bg-gradient-to-b from-transparent to-gray-50/50"
+        }`}></div>
 
-          <CodeDisplay
-            code={generatedCode}
-            isGenerating={isGenerating}
-            onCopy={handleCopy}
-            darkMode={darkMode}
-          />
+        {/* 底部装饰波浪 */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" className="w-full h-8">
+            <path
+              fill={darkMode ? "#0f172a" : "#f9fafb"}
+              d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <main className="container mx-auto px-6 -mt-8 relative z-10">
+        {/* 主要内容区域 - 添加柔和阴影 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          <div className={`rounded-2xl p-8 backdrop-blur-sm border shadow-xl ${
+            darkMode
+              ? "bg-slate-800/90 border-slate-700/50 shadow-slate-900/50"
+              : "bg-white/90 border-slate-200/50 shadow-slate-900/10"
+          }`}>
+            <ConfigSelector
+              configs={presetConfigs}
+              selectedConfig={selectedConfig}
+              onSelect={generateCode}
+              darkMode={darkMode}
+            />
+          </div>
+
+          <div className={`rounded-2xl p-8 backdrop-blur-sm border shadow-xl ${
+            darkMode
+              ? "bg-slate-800/90 border-slate-700/50 shadow-slate-900/50"
+              : "bg-white/90 border-slate-200/50 shadow-slate-900/10"
+          }`}>
+            <CodeDisplay
+              code={generatedCode}
+              isGenerating={isGenerating}
+              onCopy={handleCopy}
+              darkMode={darkMode}
+            />
+          </div>
         </div>
 
         {/* 使用说明区域 */}
