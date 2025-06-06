@@ -13,6 +13,7 @@ import { useHistory } from "../hooks/useHistory";
 import { useCustomConfigs } from "../hooks/useCustomConfigs";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PRESET_CONFIGS } from "../constants/presets";
+import { useConfigOrder } from "../hooks/useConfigOrder";
 import { PresetConfig, HistoryRecord } from "../types";
 
 export default function Home() {
@@ -28,15 +29,32 @@ export default function Home() {
   const { customConfigs, addCustomConfig, deleteCustomConfig } =
     useCustomConfigs();
   const { errors, addError, removeError, clearErrors } = useErrorHandler();
+  const { getSortedConfigs, updateConfigOrder } = useConfigOrder();
+  const { updateCustomConfig } = useCustomConfigs();
+
+  const allConfigs = [...PRESET_CONFIGS, ...customConfigs];
+
+  // 获取排序后的配置
+  const sortedConfigs = getSortedConfigs(allConfigs);
+
+  // 处理配置重排序
+  const handleConfigReorder = (newConfigs: PresetConfig[]) => {
+    updateConfigOrder(newConfigs);
+  };
+
+  // 处理配置编辑
+  const handleEditConfig = (id: string, updates: Partial<PresetConfig>) => {
+    const config = allConfigs.find((c) => c.id === id);
+    if (config?.source === "custom") {
+      updateCustomConfig(id, updates);
+    }
+  };
 
   const [currentTime, setCurrentTime] = useState("");
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
-
-  // 合并预设配置和自定义配置
-  const allConfigs = [...PRESET_CONFIGS, ...customConfigs];
 
   // 更新时间
   useEffect(() => {
@@ -245,9 +263,11 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <div className="animate-slide-in-down">
             <ConfigSelector
-              configs={allConfigs}
+              configs={sortedConfigs}  // 改为 sortedConfigs
               selectedConfig={selectedConfig}
               onSelect={(config) => generateCode(config, addToHistory)}
+              onReorder={handleConfigReorder}
+              onEditConfig={handleEditConfig}
               darkMode={darkMode}
               onAddCustom={() => setShowCustomModal(true)}
               onDeleteCustom={deleteCustomConfig}

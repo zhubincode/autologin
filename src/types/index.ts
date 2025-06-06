@@ -8,6 +8,12 @@ export interface PresetConfig {
   description?: string;
   isCustom?: boolean;
   createdAt?: string;
+  order?: number;
+}
+
+export interface ConfigOrder {
+  configId: string;
+  order: number;
 }
 
 export interface HistoryRecord {
