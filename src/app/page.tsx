@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ConfigSelector } from "../components/ConfigSelector";
 import { CodeDisplay } from "../components/CodeDisplay";
 import { CustomConfigModal } from "../components/CustomConfigModal";
@@ -26,35 +26,33 @@ export default function Home() {
   } = useCodeGenerator();
   const { history, addToHistory, clearHistory, removeFromHistory, isClient } =
     useHistory();
-  const { customConfigs, addCustomConfig, deleteCustomConfig } =
-    useCustomConfigs();
+  const {
+    customConfigs,
+    addCustomConfig,
+    deleteCustomConfig,
+    updateCustomConfig,
+  } = useCustomConfigs();
   const { errors, addError, removeError, clearErrors } = useErrorHandler();
   const { getSortedConfigs, updateConfigOrder } = useConfigOrder();
-  const { updateCustomConfig } = useCustomConfigs();
 
-  const allConfigs = [...PRESET_CONFIGS, ...customConfigs];
-
-  // 获取排序后的配置
-  const sortedConfigs = getSortedConfigs(allConfigs);
-
-  // 处理配置重排序
-  const handleConfigReorder = (newConfigs: PresetConfig[]) => {
-    updateConfigOrder(newConfigs);
-  };
-
-  // 处理配置编辑
-  const handleEditConfig = (id: string, updates: Partial<PresetConfig>) => {
-    const config = allConfigs.find((c) => c.id === id);
-    if (config?.source === "custom") {
-      updateCustomConfig(id, updates);
-    }
-  };
-
+  // 所有 useState 和 useEffect 都要放在这里
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
+
+  // 所有 useEffect hooks
+  // 监听所有异步数据加载完成
+  useEffect(() => {
+    if (isClient) {
+      const timer = setTimeout(() => {
+        setIsDataLoaded(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isClient]);
 
   // 更新时间
   useEffect(() => {
@@ -75,23 +73,42 @@ export default function Home() {
 
   // 滚动监听
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollThreshold = 100; // 滚动阈值
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const scrollThreshold = 80; // 降低阈值
+          const scrollDelta = Math.abs(currentScrollY - lastScrollY);
 
-      // 判断是否滚动超过阈值
-      setIsScrolled(currentScrollY > scrollThreshold);
+          // 只有滚动距离超过一定值才触发状态变化
+          if (scrollDelta > 5) {
+            // 判断是否滚动超过阈值
+            setIsScrolled(currentScrollY > scrollThreshold);
 
-      // 判断滚动方向，控制导航栏显示/隐藏
-      if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
-        // 向下滚动且超过阈值，隐藏导航栏
-        setShowNavbar(false);
-      } else {
-        // 向上滚动或未超过阈值，显示导航栏
-        setShowNavbar(true);
+            // 判断滚动方向，控制导航栏显示/隐藏
+            if (
+              currentScrollY > lastScrollY &&
+              currentScrollY > scrollThreshold
+            ) {
+              // 向下滚动且超过阈值，隐藏导航栏
+              setShowNavbar(false);
+            } else if (
+              currentScrollY < lastScrollY ||
+              currentScrollY <= scrollThreshold
+            ) {
+              // 向上滚动或回到顶部，显示导航栏
+              setShowNavbar(true);
+            }
+
+            setLastScrollY(currentScrollY);
+          }
+
+          ticking = false;
+        });
+        ticking = true;
       }
-
-      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -112,6 +129,66 @@ export default function Home() {
     setShowCustomModal(false);
   };
 
+  // 使用 useMemo 确保状态更新时重新计算
+  const allConfigs = useMemo(() => {
+    return [...PRESET_CONFIGS, ...customConfigs];
+  }, [customConfigs]);
+
+  const sortedConfigs = useMemo(() => {
+    return getSortedConfigs(allConfigs);
+  }, [allConfigs, getSortedConfigs]);
+
+  const handleConfigReorder = (newConfigs: PresetConfig[]) => {
+    updateConfigOrder(newConfigs);
+  };
+
+  const handleEditConfig = async (
+    id: string,
+    updates: Partial<PresetConfig>
+  ) => {
+    const config = allConfigs.find((c) => c.id === id);
+    if (config) {
+      if (config.source === "custom" || config.isCustom) {
+        // 编辑自定义配置
+        updateCustomConfig(id, updates);
+      } else {
+        // 对于预设配置，创建一个自定义副本
+        const customConfig = {
+          ...config,
+          ...updates,
+          id: `custom-${Date.now()}`,
+          source: "custom" as const,
+          isCustom: true,
+          createdAt: new Date().toISOString(),
+        };
+        addCustomConfig(customConfig);
+      }
+      // 添加一个小延迟确保状态更新完成
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  };
+
+  // 条件渲染放在最后
+  if (!isDataLoaded) {
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+          darkMode ? "bg-slate-900" : "bg-gray-50"
+        }`}
+      >
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p
+            className={`text-lg ${darkMode ? "text-white" : "text-slate-900"}`}
+          >
+            加载中...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 正常渲染的 JSX
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
@@ -140,12 +217,18 @@ export default function Home() {
         darkMode={darkMode}
       />
 
-      {/* 固定导航栏 */}
+      {/* 固定导航栏 - 改进过渡效果 */}
       {isScrolled && (
         <div
-          className={`navbar-fixed smooth-transition glass-effect ${
-            showNavbar ? "" : "navbar-hidden"
-          } ${darkMode ? "bg-slate-900/80" : "bg-white/80"}`}
+          className={`navbar-fixed navbar-fade-in smooth-transition glass-effect ${
+            showNavbar
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-full"
+          } ${darkMode ? "bg-slate-900/90" : "bg-white/90"}`}
+          style={{
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            transform: showNavbar ? "translateY(0)" : "translateY(-100%)",
+          }}
         >
           <nav className="container mx-auto px-6 py-3">
             <div className="flex justify-between items-center">
@@ -263,7 +346,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <div className="animate-slide-in-down">
             <ConfigSelector
-              configs={sortedConfigs}  // 改为 sortedConfigs
+              configs={sortedConfigs} // 改为 sortedConfigs
               selectedConfig={selectedConfig}
               onSelect={(config) => generateCode(config, addToHistory)}
               onReorder={handleConfigReorder}

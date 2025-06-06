@@ -61,6 +61,46 @@ export const ConfigSelector = ({
     }
   };
 
+  // 如果配置为空，显示骨架屏
+  if (configs.length === 0) {
+    return (
+      <div className={`rounded-2xl p-8 backdrop-blur-xl border shadow-2xl ${
+        darkMode
+          ? "bg-slate-800/50 border-slate-700"
+          : "bg-white/70 border-slate-200"
+      }`}>
+        <div className="flex items-center space-x-3 mb-8">
+          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg animate-pulse"></div>
+          <div className={`h-6 w-24 rounded animate-pulse ${
+            darkMode ? "bg-slate-600" : "bg-slate-200"
+          }`}></div>
+        </div>
+
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={`p-6 rounded-xl border-2 animate-pulse ${
+              darkMode ? "bg-slate-700/30 border-slate-600" : "bg-white/50 border-slate-200"
+            }`}>
+              <div className="flex items-start space-x-4">
+                <div className={`w-12 h-12 rounded-lg ${
+                  darkMode ? "bg-slate-600" : "bg-slate-300"
+                }`}></div>
+                <div className="flex-1 space-y-2">
+                  <div className={`h-5 w-32 rounded ${
+                    darkMode ? "bg-slate-600" : "bg-slate-300"
+                  }`}></div>
+                  <div className={`h-4 w-48 rounded ${
+                    darkMode ? "bg-slate-600" : "bg-slate-300"
+                  }`}></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`rounded-2xl p-8 backdrop-blur-xl border shadow-2xl custom-scrollbar ${
@@ -120,7 +160,7 @@ export const ConfigSelector = ({
                 config={config}
                 isSelected={selectedConfig?.id === config.id}
                 onSelect={onSelect}
-                onEdit={onEditConfig}
+                onEdit={async (id, updates) => await onEditConfig(id, updates)}
                 onDelete={onDeleteCustom}
                 darkMode={darkMode}
               />
