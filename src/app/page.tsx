@@ -6,6 +6,7 @@ import { CodeDisplay } from "../components/CodeDisplay";
 import { CustomConfigModal } from "../components/CustomConfigModal";
 import { HistoryPanel } from "../components/HistoryPanel";
 import { ErrorToast } from "../components/ErrorToast";
+import { HelpModal } from "../components/HelpModal";
 import { SunIcon, MoonIcon } from "../components/icons";
 import { useTheme } from "../hooks/useTheme";
 import { useCodeGenerator } from "../hooks/useCodeGenerator";
@@ -39,6 +40,7 @@ export default function Home() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
   const [showCustomModal, setShowCustomModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
@@ -69,6 +71,23 @@ export default function Home() {
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // 添加键盘事件监听
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowHelpModal(false);
+      }
+      // F1 键打开帮助
+      if (event.key === "F1") {
+        event.preventDefault();
+        setShowHelpModal(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // 滚动监听
@@ -217,6 +236,13 @@ export default function Home() {
         darkMode={darkMode}
       />
 
+      {/* 帮助模态框 */}
+      <HelpModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+        darkMode={darkMode}
+      />
+
       {/* 固定导航栏 - 改进过渡效果 */}
       {isScrolled && (
         <div
@@ -258,6 +284,17 @@ export default function Home() {
                     darkMode={darkMode}
                   />
                 )}
+                <button
+                  onClick={() => setShowHelpModal(true)}
+                  className={`px-3 py-1.5 rounded-lg transition-all duration-200 hover-lift text-sm ${
+                    darkMode
+                      ? "bg-slate-700 hover:bg-slate-600 text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                  }`}
+                  title="帮助 (F1)"
+                >
+                  ❓ 帮助
+                </button>
                 <button
                   onClick={() => setShowCustomModal(true)}
                   className={`px-3 py-1.5 rounded-lg transition-all duration-200 hover-lift text-sm ${
@@ -314,6 +351,13 @@ export default function Home() {
                 />
               )}
               <button
+                onClick={() => setShowHelpModal(true)}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 hover-lift glass-effect"
+                title="帮助 (F1)"
+              >
+                ❓ 帮助
+              </button>
+              <button
                 onClick={() => setShowCustomModal(true)}
                 className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 hover-lift glass-effect"
               >
@@ -334,7 +378,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-bounce-in glow-effect">
             登录态注入工具
           </h1>
-          <p className="text-lg text-white/80 max-w-2xl mx-auto animate-fade-in">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto animate-fade-in mb-6">
             快速、安全、智能的跨浏览器登录状态迁移解决方案
           </p>
         </div>
@@ -382,29 +426,41 @@ export default function Home() {
               : "bg-white/70 border-slate-200"
           }`}
         >
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center glow-effect">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center glow-effect">
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h3
+                className={`text-2xl font-bold ${
+                  darkMode ? "text-white" : "text-slate-900"
+                }`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+                使用说明
+              </h3>
             </div>
-            <h3
-              className={`text-2xl font-bold ${
-                darkMode ? "text-white" : "text-slate-900"
+            <button
+              onClick={() => setShowHelpModal(true)}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 hover-lift text-sm ${
+                darkMode
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-blue-500 hover:bg-blue-600 text-white"
               }`}
             >
-              使用说明
-            </h3>
+              📖 详细帮助
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
