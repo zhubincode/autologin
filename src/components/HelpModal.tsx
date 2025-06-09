@@ -132,7 +132,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({
                   {
                     step: "5",
                     title: "注入登录态",
-                    desc: "在目标浏览器控制台粘贴执行代码B",
+                    desc: "在目标网站的登录页面控制台执行代码B",
                     icon: "🎯",
                   },
                   {
@@ -174,6 +174,119 @@ export const HelpModal: React.FC<HelpModalProps> = ({
                     </p>
                   </div>
                 ))}
+              </div>
+
+              {/* 重要提示：代码B执行说明 */}
+              <div
+                className={`mt-6 p-5 rounded-lg border-l-4 border-orange-500 ${
+                  darkMode ? "bg-orange-900/20" : "bg-orange-50"
+                }`}
+              >
+                <div className="flex items-start space-x-3">
+                  <span className="text-2xl">⚠️</span>
+                  <div>
+                    <h4
+                      className={`font-semibold mb-2 text-orange-700 dark:text-orange-300`}
+                    >
+                      重要：代码B执行位置说明
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div
+                        className={`p-4 rounded-lg border ${
+                          darkMode
+                            ? "bg-slate-700/30 border-slate-600"
+                            : "bg-white border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="text-lg">✅</span>
+                          <span
+                            className={`font-medium text-green-600 dark:text-green-400`}
+                          >
+                            推荐方式
+                          </span>
+                        </div>
+                        <p
+                          className={`text-sm mb-2 ${
+                            darkMode ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          <strong>直接在目标网站的登录页面执行代码B</strong>
+                        </p>
+                        <ul
+                          className={`text-xs space-y-1 ${
+                            darkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          <li>• 打开目标网站的登录页面</li>
+                          <li>• 按F12打开控制台</li>
+                          <li>• 粘贴执行代码B</li>
+                          <li>• 一次执行即可完成登录</li>
+                        </ul>
+                      </div>
+
+                      <div
+                        className={`p-4 rounded-lg border ${
+                          darkMode
+                            ? "bg-slate-700/30 border-slate-600"
+                            : "bg-white border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="text-lg">⚠️</span>
+                          <span
+                            className={`font-medium text-orange-600 dark:text-orange-400`}
+                          >
+                            备用方式
+                          </span>
+                        </div>
+                        <p
+                          className={`text-sm mb-2 ${
+                            darkMode ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          <strong>在任意页面执行（需要二次执行）</strong>
+                        </p>
+                        <ul
+                          className={`text-xs space-y-1 ${
+                            darkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          <li>• 第一次执行：写入登录数据</li>
+                          <li>• 自动跳转到登录页面</li>
+                          <li>• 第二次执行：完成登录验证</li>
+                          <li>• 由于浏览器安全策略限制</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`mt-4 p-3 rounded-lg ${
+                        darkMode ? "bg-blue-900/30" : "bg-blue-100"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="text-sm">💡</span>
+                        <span
+                          className={`text-sm font-medium ${
+                            darkMode ? "text-blue-300" : "text-blue-700"
+                          }`}
+                        >
+                          为什么会这样？
+                        </span>
+                      </div>
+                      <p
+                        className={`text-xs ${
+                          darkMode ? "text-blue-200" : "text-blue-600"
+                        }`}
+                      >
+                        现代浏览器的安全策略限制了跨域数据写入，当在非目标网站执行代码B时，
+                        浏览器可能阻止直接写入登录数据。因此推荐直接在目标网站执行，
+                        或者接受需要二次执行的情况。
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -461,6 +574,10 @@ export const HelpModal: React.FC<HelpModalProps> = ({
                   {
                     q: "代码B执行后为什么还是没有登录？",
                     a: "请刷新页面查看效果。部分网站需要重新加载才能识别新的登录状态。如果仍然无效，可能是网站的登录机制发生了变化。",
+                  },
+                  {
+                    q: "为什么代码B需要执行两次才能登录？",
+                    a: "这是由于浏览器安全策略导致的。推荐直接在目标网站的登录页面执行代码B，这样只需要执行一次。如果在其他页面执行，由于跨域限制，可能需要二次执行来完成登录验证。",
                   },
                   {
                     q: "可以在移动设备上使用吗？",
