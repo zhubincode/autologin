@@ -140,7 +140,7 @@ export const ConfigSelector = ({
               : "bg-slate-100/80 text-slate-600 border border-slate-300"
           }`}
         >
-          🔄 拖拽排序 • ✏️ 双击编辑
+          🔄 支持拖拽排序
         </div>
       </div>
 
